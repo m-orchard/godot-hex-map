@@ -1,0 +1,8 @@
+# Exports
+.* export-ignore
+.github/ export-ignore
+assets/ export-ignore
+demo/ export-ignore
+godot-cpp/ export-ignore
+tests/ export-ignore
+tools/ export-ignore
