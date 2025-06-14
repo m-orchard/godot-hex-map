@@ -1,0 +1,20 @@
+name: Release
+on:
+  release:
+    types: [published]
+
+jobs:
+  upload-archive:
+    name: Create & Upload Archive
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name }}
+      - shell: sh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG_NAME: ${{ github.event.release.tag_name }}
+        run: |
+          git archive -o $TAG_NAME.tar.gz TAG_NAME
+          gh release upload $TAG_NAME $TAG_NAME.tar.gz
