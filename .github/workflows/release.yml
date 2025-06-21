@@ -37,6 +37,6 @@ jobs:
           ARCHIVE_NAME: ${{ needs.build.outputs.artifact-name }}-${{ github.event.release.tag_name }}.tar.gz
         run: |
           echo "Creating $ARCHIVE_NAME from ${{ env.ARTIFACT_PATH }}"
-          tar -cvf $ARCHIVE_NAME ${{ env.ARTIFACT_PATH }}
+          tar -cvf $ARCHIVE_NAME ${{ env.ARTIFACT_PATH }} -C ${{ github.workspace }}
           echo "Uploading $ARCHIVE_NAME to release ${{ github.event.release.tag_name }}"
           gh release upload ${{ github.event.release.tag_name }} $ARCHIVE_NAME
