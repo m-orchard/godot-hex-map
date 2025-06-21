@@ -3,9 +3,6 @@ on:
   release:
     types: [published]
 
-env:
-  ARTIFACT_DIRECTORY: addons
-
 jobs:
   build:
     name: Build GDExtension
@@ -18,18 +15,20 @@ jobs:
     needs: build
     name: Upload Release Archive
     runs-on: ubuntu-latest
+    env:
+      ARTIFACT_PATH: ${{ github.workspace }}/addons/${{ needs.build.outputs.artifact-name }}
     steps:
       - name: Download Build Artifact
         uses: actions/download-artifact@v4
         with:
           name: ${{ needs.build.outputs.artifact-name }}
-          path: ${{ github.workspace }}/${{ env.ARTIFACT_DIRECTORY }}
+          path: ${{ env.ARTIFACT_PATH }}
       - name: Create & Upload Archive
         shell: sh
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ARTIFACT_DIRECTORY: ${{ github.workspace }}/${{ env.ARTIFACT_DIRECTORY }}/${{ needs.build.outputs.artifact-name }}
           ARCHIVE_NAME: ${{ needs.build.outputs.artifact-name }}-${{ github.event.release.tag_name }}
         run: |
-          tar -cvf $ARCHIVE_NAME.tar.gz $ARTIFACT_DIRECTORY
+          ls -d ${{ env.ARTIFACT_PATH }}
+          tar -cvf $ARCHIVE_NAME.tar.gz ${{ env.ARTIFACT_PATH }}
           gh release upload $ARCHIVE_NAME $ARCHIVE_NAME.tar.gz
