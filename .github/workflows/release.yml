@@ -30,7 +30,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - shell: sh
-        working-directory: ./scripts
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ARTIFACT_DIRECTORY: ${{ env.ARTIFACT_DIRECTORY }}/${{ needs.build.outputs.artifact-name }}
