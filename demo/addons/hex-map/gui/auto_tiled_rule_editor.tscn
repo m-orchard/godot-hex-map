@@ -1,0 +1,265 @@
+[gd_scene load_steps=13 format=3 uid="uid://p42lol2mxn4a"]
+
+[ext_resource type="Script" path="res://addons/hex_map/gui/auto_tiled_rule_editor.gd" id="1_hjusd"]
+[ext_resource type="Script" path="res://addons/hex_map/gui/auto_tiled_rule_painter_3d.gd" id="2_sqqto"]
+[ext_resource type="PackedScene" uid="uid://dut4042ogc1kq" path="res://addons/hex_map/gui/palette.tscn" id="3_ndemm"]
+[ext_resource type="Texture2D" uid="uid://b0t2we5vilohg" path="res://addons/hex_map/icons/layer_selected.svg" id="4_6au4l"]
+[ext_resource type="Texture2D" uid="uid://dd5c46r7o1ek" path="res://addons/hex_map/icons/layer_dot.svg" id="4_qsc82"]
+[ext_resource type="Texture2D" uid="uid://dq7ggm6nurccx" path="res://addons/hex_map/icons/layer_hover.svg" id="6_qchkv"]
+[ext_resource type="Texture2D" uid="uid://duo6jhp26ftsw" path="res://addons/hex_map/icons/Close.svg" id="7_0sj2e"]
+[ext_resource type="Texture2D" uid="uid://w3fx13adcvh2" path="res://addons/hex_map/icons/Save.svg" id="8_n6dfs"]
+
+[sub_resource type="Environment" id="Environment_005ur"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bss4o"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.211765, 0.239216, 0.290196, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.137392, 0.157545, 0.194983, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j0dfp"]
+draw_center = false
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0.980514, 0.762206, 0.322341, 1)
+border_blend = true
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ewxos"]
+
+[node name="AutoTiledRuleEditor" type="VBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_hjusd")
+
+[node name="Control" type="Control" parent="."]
+unique_name_in_owner = true
+clip_contents = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="RulePainter3D" type="SubViewportContainer" parent="Control"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(256, 256)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+focus_mode = 2
+mouse_filter = 0
+mouse_force_pass_scroll_events = false
+stretch = true
+script = ExtResource("2_sqqto")
+active_layer = 2
+
+[node name="SubViewport" type="SubViewport" parent="Control/RulePainter3D"]
+own_world_3d = true
+handle_input_locally = false
+canvas_cull_mask = 4294967294
+size = Vector2i(1152, 604)
+render_target_update_mode = 4
+
+[node name="TileMeshInstance3D" type="MeshInstance3D" parent="Control/RulePainter3D/SubViewport"]
+unique_name_in_owner = true
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Control/RulePainter3D/SubViewport"]
+transform = Transform3D(-0.718499, -0.528546, 0.452104, 0.652904, -0.288491, 0.700349, -0.239738, 0.798381, 0.552371, 0, 5.70908, -2.38419e-07)
+visible = false
+sky_mode = 1
+
+[node name="Camera3D" type="Camera3D" parent="Control/RulePainter3D/SubViewport"]
+unique_name_in_owner = true
+transform = Transform3D(0.965926, 0.183013, -0.183013, 0, 0.707107, 0.707107, 0.258819, -0.683013, 0.683013, -2.74519, 10.6066, 10.2452)
+environment = SubResource("Environment_005ur")
+projection = 1
+current = true
+fov = 35.0
+size = 9.45896
+
+[node name="SpotLight3D" type="SpotLight3D" parent="Control/RulePainter3D/SubViewport/Camera3D"]
+transform = Transform3D(0.965926, -0.0669873, 0.25, 0, 0.965926, 0.258819, -0.258819, -0.25, 0.933013, 3, 3, 0)
+light_size = 1.0
+spot_range = 1000.0
+spot_attenuation = 0.0
+
+[node name="CellMeshes" type="Node3D" parent="Control/RulePainter3D/SubViewport"]
+unique_name_in_owner = true
+
+[node name="LeftPanel" type="PanelContainer" parent="Control"]
+clip_contents = true
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.168403
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 100.0
+offset_bottom = -20.0
+grow_vertical = 2
+focus_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bss4o")
+metadata/_edit_use_anchors_ = true
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Control/LeftPanel"]
+z_index = 1
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="CellTypePalette" parent="Control/LeftPanel/ScrollContainer" instance=ExtResource("3_ndemm")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+preview_size = Vector2(32, 32)
+compact_view = false
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.8
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="Control/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+mouse_filter = 2
+
+[node name="LayerSelector" type="VBoxContainer" parent="Control/HBoxContainer/PanelContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+
+[node name="LayerTwoButton" type="TextureButton" parent="Control/HBoxContainer/PanelContainer/LayerSelector"]
+layout_mode = 2
+focus_mode = 0
+mouse_filter = 1
+toggle_mode = true
+button_pressed = true
+texture_normal = ExtResource("4_qsc82")
+texture_pressed = ExtResource("4_6au4l")
+texture_hover = ExtResource("6_qchkv")
+
+[node name="LayerOneButton" type="TextureButton" parent="Control/HBoxContainer/PanelContainer/LayerSelector"]
+layout_mode = 2
+focus_mode = 0
+mouse_filter = 1
+toggle_mode = true
+texture_normal = ExtResource("4_qsc82")
+texture_pressed = ExtResource("4_6au4l")
+texture_hover = ExtResource("6_qchkv")
+
+[node name="LayerZeroButton" type="TextureButton" parent="Control/HBoxContainer/PanelContainer/LayerSelector"]
+layout_mode = 2
+focus_mode = 0
+mouse_filter = 1
+toggle_mode = true
+texture_normal = ExtResource("4_qsc82")
+texture_pressed = ExtResource("4_6au4l")
+texture_hover = ExtResource("6_qchkv")
+
+[node name="LayerNegativeOneButton" type="TextureButton" parent="Control/HBoxContainer/PanelContainer/LayerSelector"]
+layout_mode = 2
+focus_mode = 0
+mouse_filter = 1
+toggle_mode = true
+texture_normal = ExtResource("4_qsc82")
+texture_pressed = ExtResource("4_6au4l")
+texture_hover = ExtResource("6_qchkv")
+
+[node name="LayerNegativeTwoButton" type="TextureButton" parent="Control/HBoxContainer/PanelContainer/LayerSelector"]
+layout_mode = 2
+focus_mode = 0
+mouse_filter = 1
+toggle_mode = true
+texture_normal = ExtResource("4_qsc82")
+texture_pressed = ExtResource("4_6au4l")
+texture_hover = ExtResource("6_qchkv")
+
+[node name="RightPanel" type="PanelContainer" parent="Control/HBoxContainer"]
+z_index = 1
+clip_contents = true
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bss4o")
+metadata/_edit_use_anchors_ = true
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Control/HBoxContainer/RightPanel"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="MeshPalette" parent="Control/HBoxContainer/RightPanel/ScrollContainer" instance=ExtResource("3_ndemm")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+preview_size = Vector2(32, 32)
+compact_view = false
+
+[node name="ActiveBorder" type="PanelContainer" parent="Control"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_j0dfp")
+
+[node name="ToolbarHBox" type="HBoxContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="Notification" type="RichTextLabel" parent="ToolbarHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ToolbarHBox"]
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_constants/separation = 10
+
+[node name="CancelButton" type="Button" parent="ToolbarHBox/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ewxos")
+text = "Cancel"
+icon = ExtResource("7_0sj2e")
+icon_alignment = 2
+
+[node name="SaveButton" type="Button" parent="ToolbarHBox/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Save"
+icon = ExtResource("8_n6dfs")
+icon_alignment = 2

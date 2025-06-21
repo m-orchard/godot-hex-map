@@ -1,0 +1,64 @@
+[gd_scene load_steps=5 format=3 uid="uid://dut4042ogc1kq"]
+
+[ext_resource type="Texture2D" uid="uid://dbrg57lmmg1vq" path="res://addons/hex_map/icons/FileThumbnail.svg" id="1_uhnyk"]
+[ext_resource type="Script" path="res://addons/hex_map/gui/palette.gd" id="1_va2gx"]
+[ext_resource type="Script" path="res://addons/hex_map/gui/column_wrap_container.gd" id="3_ocn1m"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_87nno"]
+bg_color = Color(0.14902, 0.168627, 0.2, 1)
+
+[node name="Palette" type="VBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+script = ExtResource("1_va2gx")
+preview_size = null
+compact_view = null
+
+[node name="Toolbar" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Toolbar"]
+layout_mode = 2
+
+[node name="Filter" type="LineEdit" parent="Toolbar/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "filter"
+clear_button_enabled = true
+
+[node name="CompactViewButton" type="Button" parent="Toolbar/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+toggle_mode = true
+icon = ExtResource("1_uhnyk")
+flat = true
+
+[node name="HSeparator" type="HSeparator" parent="Toolbar"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_87nno")
+
+[node name="CompactPalette" type="FlowContainer" parent="PanelContainer"]
+unique_name_in_owner = true
+visible = false
+clip_contents = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/h_separation = 3
+theme_override_constants/v_separation = 3
+
+[node name="FullPalette" type="Container" parent="PanelContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("3_ocn1m")

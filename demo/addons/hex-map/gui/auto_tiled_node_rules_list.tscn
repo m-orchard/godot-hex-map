@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://bcii1uofabb8u"]
+
+[ext_resource type="Script" path="res://addons/hex_map/gui/auto_tiled_node_rules_list.gd" id="1_tqi0s"]
+[ext_resource type="Theme" uid="uid://hmpeb1yvo8yj" path="res://addons/hex_map/hex_map_theme.tres" id="2_v8kor"]
+
+[sub_resource type="MeshLibrary" id="MeshLibrary_kq57d"]
+
+[node name="RulesContainer" type="PanelContainer"]
+offset_right = 118.0
+offset_bottom = 304.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_tqi0s")
+mesh_library = SubResource("MeshLibrary_kq57d")
+
+[node name="Rules" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("2_v8kor")

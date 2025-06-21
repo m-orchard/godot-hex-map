@@ -1,0 +1,77 @@
+[gd_scene load_steps=7 format=3 uid="uid://ilwmmns8ccdg"]
+
+[ext_resource type="Script" path="res://addons/hex_map/gui/auto_tiled_node_editor_bottom_panel.gd" id="1_2bs26"]
+[ext_resource type="Theme" uid="uid://hmpeb1yvo8yj" path="res://addons/hex_map/hex_map_theme.tres" id="1_3t1vn"]
+[ext_resource type="PackedScene" uid="uid://bcii1uofabb8u" path="res://addons/hex_map/gui/auto_tiled_node_rules_list.tscn" id="2_ep4b4"]
+[ext_resource type="PackedScene" uid="uid://p42lol2mxn4a" path="res://addons/hex_map/gui/auto_tiled_rule_editor.tscn" id="3_g8rki"]
+[ext_resource type="Texture2D" uid="uid://27nqiq38njor" path="res://addons/hex_map/icons/Add.svg" id="3_llhy6"]
+
+[sub_resource type="MeshLibrary" id="MeshLibrary_pgy6p"]
+
+[node name="AutoTiledNodeEditorBottomPanel" type="VBoxContainer"]
+offset_right = 1151.0
+offset_bottom = 648.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("1_3t1vn")
+script = ExtResource("1_2bs26")
+
+[node name="HSplitContainer" type="HSplitContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+split_offset = 200
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HSplitContainer"]
+layout_mode = 2
+
+[node name="NewRuleButton" type="Button" parent="HSplitContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 0
+text = "New Rule"
+icon = ExtResource("3_llhy6")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="HSplitContainer/VBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 3
+
+[node name="RulesList" parent="HSplitContainer/VBoxContainer/ScrollContainer" instance=ExtResource("2_ep4b4")]
+unique_name_in_owner = true
+layout_mode = 2
+mesh_library = SubResource("MeshLibrary_pgy6p")
+
+[node name="Control" type="Control" parent="HSplitContainer"]
+layout_mode = 2
+
+[node name="Directions" type="RichTextLabel" parent="HSplitContainer/Control"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+text = "[b]HexMap Auto-Tile Rules Editor[/b]
+
+Each rule in the HexMapAutoTiled node is composed of a tile mesh, and a pattern of neighboring cell values to match.  Each cell with a value set in the parent HexMapInt node is evaluated against each rule in the order until one rule matches.  The rule pattern evaluates the pattern against the HexMapInt cell for all six possible rotations around the y-axis.  When a rule matches the pattern of neighboring cells, the tile for that rule is placed at that cell location.
+
+* To create a new rule, click [b]New Rule[/b] button.
+
+* To edit any existing rule, click on the rule in the list to the left.
+
+* To [b]change the order of the rules[/b], click and drag a rule using the drag handle on the left of the rule.
+
+* To [b]disable a rule[/b] click on the disable toggle in the rule list
+
+* To [b]delete a rule[/b] click on the trash bin icon in the rule list"
+
+[node name="RuleEditor" parent="HSplitContainer/Control" instance=ExtResource("3_g8rki")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1

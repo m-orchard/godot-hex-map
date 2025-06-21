@@ -1,0 +1,87 @@
+[gd_scene load_steps=7 format=3 uid="uid://dyd26wbqhm8km"]
+
+[ext_resource type="Script" path="res://addons/hex_map/gui/auto_tiled_node_rule_list_item.gd" id="1_qap2u"]
+[ext_resource type="Texture2D" uid="uid://d21ao7ljiaii6" path="res://addons/hex_map/icons/drag_handle.svg" id="2_l43xc"]
+[ext_resource type="Theme" uid="uid://hmpeb1yvo8yj" path="res://addons/hex_map/hex_map_theme.tres" id="4_g73pa"]
+[ext_resource type="Texture2D" uid="uid://khe663y3ndwa" path="res://addons/hex_map/icons/Remove.svg" id="4_sv746"]
+
+[sub_resource type="Texture2D" id="Texture2D_57a5r"]
+resource_local_to_scene = false
+resource_name = ""
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_v4c87"]
+
+[node name="RuleListItem" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme = ExtResource("4_g73pa")
+script = ExtResource("1_qap2u")
+preview = SubResource("Texture2D_57a5r")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DragHandle" type="TextureRect" parent="HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+mouse_default_cursor_shape = 6
+texture = ExtResource("2_l43xc")
+stretch_mode = 3
+
+[node name="VSeparator" type="VSeparator" parent="HBoxContainer"]
+layout_mode = 2
+
+[node name="RulePanel" type="PanelContainer" parent="HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/RulePanel"]
+layout_mode = 2
+
+[node name="TilePreview" type="TextureRect" parent="HBoxContainer/RulePanel/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = SubResource("Texture2D_57a5r")
+
+[node name="RuleId" type="Label" parent="HBoxContainer/RulePanel/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="EnabledToggle" type="CheckButton" parent="HBoxContainer/RulePanel/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+button_pressed = true
+flat = true
+
+[node name="DeleteButton" type="Button" parent="HBoxContainer/RulePanel/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+icon = ExtResource("4_sv746")
+
+[node name="DeletePopup" type="PopupPanel" parent="HBoxContainer/RulePanel/HBoxContainer/DeleteButton"]
+unique_name_in_owner = true
+transparent_bg = true
+size = Vector2i(135, 48)
+transparent = true
+theme_override_styles/panel = SubResource("StyleBoxEmpty_v4c87")
+
+[node name="DeleteConfirmButton" type="Button" parent="HBoxContainer/RulePanel/HBoxContainer/DeleteButton/DeletePopup"]
+unique_name_in_owner = true
+offset_right = 135.0
+offset_bottom = 48.0
+focus_mode = 0
+theme_type_variation = &"DangerButton"
+text = "Delete Rule"
+icon = ExtResource("4_sv746")

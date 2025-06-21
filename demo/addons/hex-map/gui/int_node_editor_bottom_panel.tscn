@@ -1,0 +1,172 @@
+[gd_scene load_steps=10 format=3 uid="uid://bigls27b0vip1"]
+
+[ext_resource type="Theme" uid="uid://hmpeb1yvo8yj" path="res://addons/hex_map/hex_map_theme.tres" id="1_e3wnx"]
+[ext_resource type="Script" path="res://addons/hex_map/gui/int_node_editor_bottom_panel.gd" id="1_h3koj"]
+[ext_resource type="Texture2D" uid="uid://vrx8uwcvnqhs" path="res://addons/hex_map/icons/Search.svg" id="8_w81nb"]
+[ext_resource type="PackedScene" uid="uid://c4a26oqnkwm02" path="res://addons/hex_map/gui/editor_toolbar.tscn" id="9_nu8or"]
+[ext_resource type="Script" path="res://addons/hex_map/gui/column_wrap_container.gd" id="14_whjpo"]
+[ext_resource type="Texture2D" uid="uid://w3fx13adcvh2" path="res://addons/hex_map/icons/Save.svg" id="15_45eli"]
+[ext_resource type="Texture2D" uid="uid://duo6jhp26ftsw" path="res://addons/hex_map/icons/Close.svg" id="16_ibucf"]
+[ext_resource type="Texture2D" uid="uid://khe663y3ndwa" path="res://addons/hex_map/icons/Remove.svg" id="17_3fmkh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_v6jgt"]
+
+[node name="IntNodeEditorBottomPanel" type="VBoxContainer"]
+offset_right = 1152.0
+offset_bottom = 631.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("1_e3wnx")
+script = ExtResource("1_h3koj")
+
+[node name="ToolbarHBox" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="EditorCommonToolbar" parent="ToolbarHBox" instance=ExtResource("9_nu8or")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="VSeparator" type="VSeparator" parent="ToolbarHBox"]
+layout_mode = 2
+
+[node name="ShowCellsButton" type="CheckButton" parent="ToolbarHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+button_pressed = true
+text = "Show Cells"
+flat = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ToolbarHBox"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_constants/separation = 10
+
+[node name="FilterLineEdit" type="LineEdit" parent="ToolbarHBox/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+placeholder_text = "Filter Types"
+clear_button_enabled = true
+right_icon = ExtResource("8_w81nb")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HSeparator" type="HSeparator" parent="HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="ColumnWrapContainer" type="Container" parent="HBoxContainer/VBoxContainer/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("14_whjpo")
+
+[node name="EditorPopup" type="PopupPanel" parent="."]
+unique_name_in_owner = true
+auto_translate_mode = 1
+size = Vector2i(581, 819)
+
+[node name="EditorView" type="HBoxContainer" parent="EditorPopup"]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 577.0
+offset_bottom = 815.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="EditorPopup/EditorView"]
+layout_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="EditorPopup/EditorView/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 16
+columns = 2
+
+[node name="Label" type="Label" parent="EditorPopup/EditorView/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "Type ID"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="EditorPopup/EditorView/VBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CellTypeId" type="Label" parent="EditorPopup/EditorView/VBoxContainer/GridContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "1234
+"
+
+[node name="Label3" type="Label" parent="EditorPopup/EditorView/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "Name
+"
+
+[node name="CellTypeNameLineEdit" type="LineEdit" parent="EditorPopup/EditorView/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label4" type="Label" parent="EditorPopup/EditorView/VBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "Color"
+
+[node name="CellTypeColorPicker" type="ColorPicker" parent="EditorPopup/EditorView/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+color_mode = 1
+can_add_swatches = false
+presets_visible = false
+
+[node name="HSeparator" type="HSeparator" parent="EditorPopup/EditorView/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="EditorPopup/EditorView/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="EditorPopup/EditorView/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DeleteConfirmButton" type="Button" parent="EditorPopup/EditorView/VBoxContainer/HBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+focus_mode = 0
+theme_type_variation = &"DangerButton"
+text = "Delete Cell Type"
+icon = ExtResource("17_3fmkh")
+
+[node name="DeleteButton" type="Button" parent="EditorPopup/EditorView/VBoxContainer/HBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 2
+focus_mode = 0
+icon = ExtResource("17_3fmkh")
+
+[node name="CancelButton" type="Button" parent="EditorPopup/EditorView/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_styles/normal = SubResource("StyleBoxEmpty_v6jgt")
+text = "Cancel"
+icon = ExtResource("16_ibucf")
+icon_alignment = 2
+
+[node name="SubmitButton" type="Button" parent="EditorPopup/EditorView/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 8
+text = "Save"
+icon = ExtResource("15_45eli")
+icon_alignment = 2
