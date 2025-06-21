@@ -44,7 +44,7 @@ jobs:
             # { platform: ios, arch: arm64, os: macos-latest },
             # { platform: web, arch: wasm32, os: ubuntu-22.04 }
           ]
-        target-type: [editor, template_debug, template_release]
+        target-type: [editor] #, template_debug, template_release]
 
     runs-on: ${{ matrix.target.os }}
     env:
