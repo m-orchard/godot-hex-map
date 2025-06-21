@@ -1,0 +1,40 @@
+name: Release
+on:
+  release:
+    types: [published]
+
+env:
+  ARTIFACT_DIRECTORY: addons
+
+jobs:
+  build:
+    name: Build GDExtension
+    uses: ./.github/workflows/build.yml
+    with:
+      concurrency_group: ${{ github.event.release.tag_name }}
+      float_precision: double
+
+  download:
+    needs: build
+    name: Download Build Artifact
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.build.outputs.artifact-name }}
+          path: ${{ github.workspace }}/${{ env.ARTIFACT_DIRECTORY }}
+
+  upload-archive:
+    needs: [build, download]
+    name: Upload Release Archive
+    runs-on: ubuntu-latest
+    steps:
+      - shell: sh
+        working-directory: ./scripts
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ARTIFACT_DIRECTORY: ${{ env.ARTIFACT_DIRECTORY }}/${{ needs.build.outputs.artifact-name }}
+          ARCHIVE_NAME: ${{ needs.build.outputs.artifact-name }}-${{ github.event.release.tag_name }}
+        run: |
+          tar -cvf $ARCHIVE_NAME.tar.gz $ARTIFACT_DIRECTORY
+          gh release upload $ARCHIVE_NAME $ARCHIVE_NAME.tar.gz
