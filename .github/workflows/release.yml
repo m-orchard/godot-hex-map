@@ -11,8 +11,8 @@ jobs:
     name: Build GDExtension
     uses: ./.github/workflows/build.yml
     with:
-      concurrency_group: ${{ github.event.release.tag_name }}
-      float_precision: double
+      concurrency-group: ${{ github.event.release.tag_name }}
+      float-precision: double
 
   download:
     needs: build
