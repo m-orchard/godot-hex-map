@@ -59,7 +59,7 @@ jobs:
         with:
           platform: ${{ matrix.target.platform }}
           em-version: 3.1.62
-  
+
       - name: Restore Scons cache
         uses: godotengine/godot-cpp/.github/actions/godot-cache-restore@godot-4.4-stable
         with:
