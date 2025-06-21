@@ -79,7 +79,7 @@ jobs:
             precision=${{ inputs.float-precision }}
 
       - name: Save Scons cache
-        uses: ./godot-cpp/.github/actions/godot-cache-save@godot-4.4-stable
+        uses: godotengine/godot-cpp/.github/actions/godot-cache-save@godot-4.4-stable
         with:
           scons-cache: ${{ github.workspace }}/.scons-cache/
           cache-name: scons_cache-${{ env.BUILD_VERSION }}_${{ hashFiles('.gitmodules') }}
