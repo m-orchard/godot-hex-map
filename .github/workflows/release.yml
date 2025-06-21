@@ -18,6 +18,13 @@ jobs:
     env:
       ARTIFACT_PATH: ${{ github.workspace }}/addons/${{ needs.build.outputs.artifact-name }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # We only need the .git folder, but it's not supported yet (https://github.com/actions/checkout/issues/603).
+          # This minimises what's checked out.
+          sparse-checkout: |
+            .github
       - name: Download Build Artifact
         uses: actions/download-artifact@v4
         with:
