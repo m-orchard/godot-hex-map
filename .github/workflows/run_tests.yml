@@ -1,0 +1,100 @@
+name: Run Tests
+on:
+  pull_request:
+    branches:
+      - main
+
+env:
+  # Used to select the version of Godot to run the tests with.
+  GODOT_TEST_VERSION: 4.3-stable
+  # Use UTF-8 on Linux.
+  LANG: en_US.UTF-8
+  LC_ALL: en_US.UTF-8
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  run-tests:
+    name: Run Tests
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          [
+            { platform: linux, arch: x86_64, os: ubuntu-22.04 },
+            { platform: windows, arch: x86_64, os: windows-latest },
+            { platform: windows, arch: x86_32, os: windows-latest },
+            { platform: macos, arch: universal, os: macos-latest },
+            { platform: android, arch: arm64, os: ubuntu-22.04 },
+            { platform: android, arch: arm32, os: ubuntu-22.04 },
+            { platform: android, arch: x86_64, os: ubuntu-22.04 },
+            { platform: android, arch: x86_32, os: ubuntu-22.04 },
+            { platform: ios, arch: arm64, os: macos-latest },
+            { platform: web, arch: wasm32, os: ubuntu-22.04 }
+          ]
+        target-type: [editor, template_debug, template_release]
+        # disabling double precision builds for now; doubles the CI time for
+        # unlikely case.
+        float-precision: [single] # , double]
+
+    runs-on: ${{ matrix.target.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Run doctests
+        run: |
+          scons \
+            verbose=1 \
+            target=${{ matrix.target-type }} \
+            platform=${{ matrix.target.platform }} \
+            arch=${{ matrix.target.arch }} \
+            precision=${{ matrix.float-precision }} \
+            run_tests
+
+      - name: Download requested Godot version for testing
+        if: ${{ matrix.target-type == 'editor' }}
+        run: |
+          wget "https://github.com/godotengine/godot-builds/releases/download/${GODOT_TEST_VERSION}/Godot_v${GODOT_TEST_VERSION}_linux.x86_64.zip" -O Godot.zip
+          unzip -a Godot.zip
+          chmod +x "Godot_v${GODOT_TEST_VERSION}_linux.x86_64"
+          echo "GODOT=$(pwd)/Godot_v${GODOT_TEST_VERSION}_linux.x86_64" >> $GITHUB_ENV
+
+      # run tests on the editor builds
+      - name: Run GDScript tests
+        if: ${{ matrix.target-type == 'editor' }}
+        run: |
+          set -x
+          $GODOT --headless --version
+
+          # link the dll over into lib so we can run the tests
+          mkdir -p demo/addons/hex_map/lib/ &&
+              ln -sv $(pwd)/bin/* demo/addons/hex_map/lib/
+          # workaround for https://github.com/bitwes/Gut/issues/589, create the
+          # .godot directory so GUT can find GutUtils
+          (cd demo &&
+              (timeout 30 $GODOT --import --headless >/dev/null 2>&1 || true))
+
+          # actually run the tests, we need to save the output to check for
+          # test failures
+          $GODOT --headless -s addons/gut/gut_cmdln.gd --path ./demo 2>&1 |
+              tee test-output.txt
+
+          # check for failing tests
+          if grep -qE -- "---- [0-9]+ failing tests ----" test-output.txt; then
+            exit 1
+          fi
+
+          # check for script errors
+          if grep -EC 3 -- "SCRIPT ERROR:" test-output.txt; then
+            echo "*** Tests failed due to script errors***"
+            exit 1
+          fi
+
+          # cd test
+          # # Need to run the editor so .godot is generated... but it crashes! Ignore that :-)
+          # (cd project && (timeout 30 $GODOT --import --headless >/dev/null 2>&1 || true))
+          # ./run-tests.sh
