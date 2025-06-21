@@ -1,0 +1,50 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        type: string
+        required: true
+  release:
+    types: [published]
+
+jobs:
+  build:
+    name: Build GDExtension
+    uses: ./.github/workflows/build.yml
+    with:
+      concurrency-group: ${{ inputs.tag || github.event.release.tag_name }}
+
+  archive:
+    needs: build
+    name: Create & Upload Archive
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_TAG: ${{ inputs.tag || github.event.release.tag_name }}
+      BUILD_ARTIFACT_NAME: ${{ needs.build.outputs.artifact-name }}
+      BUILD_ARTIFACT_PATH: addons/${{ needs.build.outputs.artifact-name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+          # We only need the .git folder, but it's not supported yet (https://github.com/actions/checkout/issues/603).
+          # This minimises what's checked out.
+          sparse-checkout: .github
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.BUILD_ARTIFACT_NAME }}
+          path: ${{ env.BUILD_ARTIFACT_PATH }}
+      - id: create-archive
+        name: Create Archive
+        shell: sh
+        env:
+          ARCHIVE_NAME: ${{ env.BUILD_ARTIFACT_NAME }}-${{ env.RELEASE_TAG }}.tar.gz
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Creating $ARCHIVE_NAME from ${{ env.BUILD_ARTIFACT_PATH }}"
+          tar -czvf $ARCHIVE_NAME ${{ env.BUILD_ARTIFACT_PATH }}
+          echo "Uploading $ARCHIVE_NAME to release ${{ env.RELEASE_TAG }}"
+          gh release upload ${{ env.RELEASE_TAG }} $ARCHIVE_NAME

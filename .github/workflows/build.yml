@@ -1,0 +1,106 @@
+name: Build
+
+on:
+  workflow_call:
+    inputs:
+      ref:
+        type: string
+      concurrency-group:
+        type: string
+        required: true
+      float-precision:
+        type: string
+        default: single
+      artifact-name:
+        type: string
+        default: hex_map
+    outputs:
+      artifact-name:
+        value: ${{ inputs.artifact-name }}
+
+env:
+  # Use UTF-8 on Linux.
+  LANG: en_US.UTF-8
+  LC_ALL: en_US.UTF-8
+
+concurrency:
+  group: ${{ inputs.concurrency-group }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build GDExtension
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          [
+            { platform: linux, arch: x86_64, os: ubuntu-22.04 },
+            { platform: windows, arch: x86_64, os: windows-latest },
+            { platform: windows, arch: x86_32, os: windows-latest },
+            { platform: macos, arch: universal, os: macos-latest },
+            { platform: android, arch: arm64, os: ubuntu-22.04 },
+            { platform: android, arch: arm32, os: ubuntu-22.04 },
+            { platform: android, arch: x86_64, os: ubuntu-22.04 },
+            { platform: android, arch: x86_32, os: ubuntu-22.04 },
+            { platform: ios, arch: arm64, os: macos-latest },
+            { platform: web, arch: wasm32, os: ubuntu-22.04 }
+          ]
+        target-type: [editor, template_debug, template_release]
+
+    runs-on: ${{ matrix.target.os }}
+    env:
+      BUILD_VERSION: ${{ matrix.target.platform }}_${{ matrix.target.arch }}_${{ inputs.float-precision }}_${{ matrix.target-type }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+          submodules: true
+
+      - name: Setup godot-cpp build environment
+        uses: godotengine/godot-cpp/.github/actions/setup-godot-cpp@godot-4.4-stable
+        with:
+          platform: ${{ matrix.target.platform }}
+          em-version: 3.1.62
+
+      - name: Restore Scons cache
+        uses: godotengine/godot-cpp/.github/actions/godot-cache-restore@godot-4.4-stable
+        with:
+          scons-cache: ${{ github.workspace }}/.scons-cache/
+          cache-name: scons_cache-${{ env.BUILD_VERSION }}_${{ hashFiles('.gitmodules') }}
+
+      - name: Build GDExtension
+        shell: sh
+        env:
+          SCONS_CACHE: ${{ github.workspace }}/.scons-cache/
+        run: |
+          scons \
+            verbose=1 \
+            target=${{ matrix.target-type }} \
+            platform=${{ matrix.target.platform }} \
+            arch=${{ matrix.target.arch }} \
+            precision=${{ inputs.float-precision }}
+
+      - name: Save Scons cache
+        uses: godotengine/godot-cpp/.github/actions/godot-cache-save@godot-4.4-stable
+        with:
+          scons-cache: ${{ github.workspace }}/.scons-cache/
+          cache-name: scons_cache-${{ env.BUILD_VERSION }}_${{ hashFiles('.gitmodules') }}
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.artifact-name }}-${{ env.BUILD_VERSION }}_${{ hashFiles('.gitmodules') }}
+          path: ${{ github.workspace }}/demo/addons/hex_map/
+
+  merge:
+    runs-on: ubuntu-22.04
+    needs: build
+    steps:
+      - name: Merge Artifacts
+        uses: actions/upload-artifact/merge@v4
+        with:
+          name: ${{ inputs.artifact-name }}
+          pattern: ${{ inputs.artifact-name }}-*
+          delete-merged: true
+          retention-days: 1
