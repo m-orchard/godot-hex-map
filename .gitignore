@@ -9,9 +9,6 @@ extension_api.json
 .nobackup*
 .scons_cache
 
-# build dlls
-demo/addons/hex_map/lib/*
-
 # test binary
 tests/tests
 
