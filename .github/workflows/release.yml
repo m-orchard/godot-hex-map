@@ -16,7 +16,7 @@ jobs:
     name: Upload Release Archive
     runs-on: ubuntu-latest
     env:
-      ARTIFACT_PATH: ${{ github.workspace }}/addons/${{ needs.build.outputs.artifact-name }}
+      ARTIFACT_PATH: addons/${{ needs.build.outputs.artifact-name }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,7 +29,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ${{ needs.build.outputs.artifact-name }}
-          path: ${{ env.ARTIFACT_PATH }}
+          path: ${{ github.workspace }}/${{ env.ARTIFACT_PATH }}
       - name: Create & Upload Archive
         shell: sh
         env:
@@ -37,6 +37,6 @@ jobs:
           ARCHIVE_NAME: ${{ needs.build.outputs.artifact-name }}-${{ github.event.release.tag_name }}.tar.gz
         run: |
           echo "Creating $ARCHIVE_NAME from ${{ env.ARTIFACT_PATH }}"
-          tar -cvf $ARCHIVE_NAME ${{ env.ARTIFACT_PATH }} -C ${{ github.workspace }}
+          tar -cvf $ARCHIVE_NAME ${{ env.ARTIFACT_PATH }}
           echo "Uploading $ARCHIVE_NAME to release ${{ github.event.release.tag_name }}"
           gh release upload ${{ github.event.release.tag_name }} $ARCHIVE_NAME
