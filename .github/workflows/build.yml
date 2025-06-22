@@ -11,7 +11,7 @@ on:
         default: single
       artifact-name:
         type: string
-        default: hex-map
+        default: hex_map
     outputs:
       artifact-name:
         value: ${{ inputs.artifact-name }}
