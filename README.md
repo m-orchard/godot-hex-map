@@ -1,4 +1,4 @@
-**Godot 4 GDExtension for creating 3D hexagonal maps**
+**Really nice Godot 4 GDExtension for creating 3D hexagonal maps**
 
 This GDExtension is a complete redesign of the Godot GridMap module to support
 hexagonal cells.  It provides a basic `HexMapTiled` node for manually placing
