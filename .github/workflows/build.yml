@@ -85,15 +85,3 @@ jobs:
         with:
           name: ${{ inputs.artifact-name }}-${{ env.BUILD_VERSION }}_${{ hashFiles('.gitmodules') }}
           path: ${{ github.workspace }}/demo/addons/hex_map/
-
-  merge:
-    runs-on: ubuntu-22.04
-    needs: build
-    steps:
-      - name: Merge Artifacts
-        uses: actions/upload-artifact/merge@v4
-        with:
-          name: ${{ inputs.artifact-name }}
-          pattern: ${{ inputs.artifact-name }}-*
-          delete-merged: true
-          retention-days: 1
