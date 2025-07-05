@@ -37,8 +37,9 @@ jobs:
       - name: Download Build Artifact
         uses: actions/download-artifact@v4
         with:
-          name: ${{ env.BUILD_ARTIFACT_NAME }}
+          pattern: ${{ env.BUILD_ARTIFACT_NAME }}-*
           path: ${{ env.BUILD_ARTIFACT_PATH }}
+          merge-multiple: true
       - id: create-archive
         name: Create Archive
         shell: sh
